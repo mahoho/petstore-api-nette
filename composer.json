@@ -18,11 +18,18 @@
 		"nette/security": "^3.2",
 		"nette/utils": "^4.0",
 		"latte/latte": "^3.0",
-		"tracy/tracy": "^2.10"
-	},
+		"tracy/tracy": "^2.10",
+      	"ext-simplexml": "*",
+		"ext-curl": "*",
+		"ext-json": "*",
+		"ext-mbstring": "*",
+		"doctrine/inflector": "^2.0",
+		"guzzlehttp/guzzle": "^7.9",
+      	"ext-dom": "*",
+		"servo/fluidxml": "^2.0"
+    },
 	"require-dev": {
-		"nette/tester": "^2.5",
-		"symfony/thanks": "^1"
+		"nette/tester": "^2.5"
 	},
 	"autoload": {
 		"psr-4": {

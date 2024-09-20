@@ -1,9 +1,9 @@
 <?php
 
-namespace App\DataModels;
+namespace App\UI\Pet;
 
 use App\DataModels\Support\DataModel;
-use App\DataModels\Support\ObjectSerializer;
+use App\UI\Tag\TagDataModel;
 
 
 /**
@@ -11,14 +11,14 @@ use App\DataModels\Support\ObjectSerializer;
  *
  * @property int $id
  * @property string $name
- * @property ?Category $category
+ * @property ?CategoryDataModel $category
  * @property string[] $photoUrls
- * @property Tag[] $tags
+ * @property TagDataModel[] $tags
  * @property string $status
  *
  * @link     https://openapi-generator.tech
  */
-class Pet extends DataModel {
+class PetDataModel extends DataModel {
     /**
      * The original name of the model.
      *
@@ -199,7 +199,7 @@ class Pet extends DataModel {
     /**
      * Gets category
      *
-     * @return \App\DataModels\Category|null
+     * @return \App\UI\Pet\CategoryDataModel|null
      */
     public function getCategory() {
         return $this->container['category'];
@@ -208,7 +208,7 @@ class Pet extends DataModel {
     /**
      * Sets category
      *
-     * @param \App\DataModels\Category|null $category category
+     * @param \App\UI\Pet\CategoryDataModel|null $category category
      *
      * @return self
      */
@@ -249,7 +249,7 @@ class Pet extends DataModel {
     /**
      * Gets tags
      *
-     * @return \App\DataModels\Tag[]|null
+     * @return \App\UI\Tag\TagDataModel[]|null
      */
     public function getTags() {
         return $this->container['tags'];
@@ -258,7 +258,7 @@ class Pet extends DataModel {
     /**
      * Sets tags
      *
-     * @param \App\DataModels\Tag[]|null $tags tags
+     * @param \App\UI\Tag\TagDataModel[]|null $tags tags
      *
      * @return self
      */

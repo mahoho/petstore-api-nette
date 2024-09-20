@@ -1,12 +1,12 @@
 <?php
 
-namespace App\DataModels;
+namespace App\UI\User;
 
 use App\DataModels\Support\DataModel;
 
 
 /**
- * User Class Doc Comment
+ * UserDataModel Class Doc Comment
  *
  * @property int $id
  * @property string $username
@@ -19,13 +19,13 @@ use App\DataModels\Support\DataModel;
  *
  * @link     https://openapi-generator.tech
  */
-class User extends DataModel {
+class UserDataModel extends DataModel {
     /**
      * The original name of the model.
      *
      * @var string
      */
-    protected static $openAPIModelName = 'User';
+    protected static $openAPIModelName = 'UserDataModel';
 
     /**
      * Array of property to type mappings. Used for (de)serialization
@@ -305,7 +305,7 @@ class User extends DataModel {
     /**
      * Sets userStatus
      *
-     * @param int|null $userStatus User Status
+     * @param int|null $userStatus UserDataModel Status
      *
      * @return self
      */

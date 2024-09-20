@@ -2,10 +2,9 @@
 
 namespace App\UI\Pet;
 
-use App\DataModels\Pet;
 use App\UI\XmlModel;
 
 class PetModel extends XmlModel {
-    protected $dataModelClass = Pet::class;
+    protected $dataModelClass = PetDataModel::class;
     protected $xmlFileName = 'pets';
 }

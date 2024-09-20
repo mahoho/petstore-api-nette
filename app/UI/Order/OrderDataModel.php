@@ -1,10 +1,10 @@
 <?php
-namespace App\DataModels;
+namespace App\UI\Order;
 
 use App\DataModels\Support\DataModel;
 
 /**
- * Order Class Doc Comment
+ * OrderDataModel Class Doc Comment
  * @property $id
  * @property $petId
  * @property $quantity
@@ -14,13 +14,13 @@ use App\DataModels\Support\DataModel;
  *
  * @link     https://openapi-generator.tech
  */
-class Order extends DataModel {
+class OrderDataModel extends DataModel {
     /**
      * The original name of the model.
      *
      * @var string
      */
-    protected static $openAPIModelName = 'Order';
+    protected static $openAPIModelName = 'OrderDataModel';
 
     /**
      * Array of property to type mappings. Used for (de)serialization
@@ -240,7 +240,7 @@ class Order extends DataModel {
     /**
      * Sets status
      *
-     * @param string|null $status Order Status
+     * @param string|null $status OrderDataModel Status
      *
      * @return self
      */

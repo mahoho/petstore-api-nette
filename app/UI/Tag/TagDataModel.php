@@ -1,25 +1,25 @@
 <?php
 
-namespace App\DataModels;
+namespace App\UI\Tag;
 
 use App\DataModels\Support\DataModel;
 
 
 /**
- * Tag Class Doc Comment
+ * TagDataModel Class Doc Comment
  *
  * @property int $id
  * @property string $name
  *
  * @link     https://openapi-generator.tech
  */
-class Tag extends DataModel {
+class TagDataModel extends DataModel {
     /**
      * The original name of the model.
      *
      * @var string
      */
-    protected static $openAPIModelName = 'Tag';
+    protected static $openAPIModelName = 'TagDataModel';
 
     /**
      * Array of property to type mappings. Used for (de)serialization

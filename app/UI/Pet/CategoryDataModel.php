@@ -1,11 +1,11 @@
 <?php
-namespace App\DataModels;
+namespace App\UI\Pet;
 
 use App\DataModels\Support\DataModel;
 
 
 /**
- * Category Class Doc Comment
+ * CategoryDataModel Class Doc Comment
  *
  *
  * @property int $id
@@ -13,13 +13,13 @@ use App\DataModels\Support\DataModel;
  *
  * @link     https://openapi-generator.tech
  */
-class Category extends DataModel {
+class CategoryDataModel extends DataModel {
     /**
      * The original name of the model.
      *
      * @var string
      */
-    protected static $openAPIModelName = 'Category';
+    protected static $openAPIModelName = 'CategoryDataModel';
 
     /**
      * Array of property to type mappings. Used for (de)serialization

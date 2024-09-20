@@ -108,7 +108,14 @@ abstract class XmlModel {
 
         $xmlString = file_get_contents($this->xmlFile);
 
-        $array = XmlToArray::convert($xmlString, ['tags' => '', 'photoUrl' => 'photoUrls', $this->elementName => ""], ['tags' => '', 'photoUrl' => 'photoUrls']);
+        $array = XmlToArray::convert($xmlString, [
+            'tags' => '',
+            'photoUrl' => 'photoUrls',
+            $this->elementName => ""
+        ], [
+            'tags' => '',
+            'photoUrl' => 'photoUrls'
+        ]);
 
         $result = [];
 

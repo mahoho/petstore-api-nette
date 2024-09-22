@@ -40,7 +40,9 @@ class XmlToArray {
 		self::$shouldBeArray = $shouldBeArray;
 		self::$nodeNameLocation = $stripNamespaces ? 'localName' : 'nodeName';
 
-		return self::processNode($dom->documentElement);
+		$result = self::processNode($dom->documentElement);
+
+        return $result ?? [];
 	}
 
 	/**
@@ -92,7 +94,7 @@ class XmlToArray {
 					$resultAttributes['@' . self::name($attrNode)] = $attrNode->nodeValue;
 				}
 
-				return ($resultAttributes + $resultElements) ?: ''; // атрибуты перед элементами
+				return ($resultAttributes + $resultElements) ?: null; // атрибуты перед элементами
 			}
 			default: {
 				return null;

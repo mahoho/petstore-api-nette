@@ -236,6 +236,22 @@ abstract class DataModel implements ModelInterface, ArrayAccess, \JsonSerializab
         }
     }
 
+    public function __get(string $name) {
+        return $this->container[$name] ?? null;
+    }
+
+    public function __set(string $name, $value): void {
+        $this->container[$name] = $value;
+    }
+
+    public function __unset(string $name): void {
+        unset($this->container[$name]);
+    }
+
+    public function __isset(string $name): bool {
+        return isset($this->container[$name]);
+    }
+
     /**
      * Unsets offset.
      *

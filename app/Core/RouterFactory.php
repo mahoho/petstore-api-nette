@@ -26,7 +26,7 @@ final class RouterFactory {
         $router->addRoute('/store/inventory', 'Order:inventory');
         $router->addRoute('/store/order/[<id>]', 'Order:default');
 
-        $router->addRoute('/user/createCreateWithList', 'User:createCreateWithList');
+        $router->addRoute('/user/createWithList', 'User:createWithList');
         $router->addRoute('/user/login', 'User:login');
         $router->addRoute('/user/logout', 'User:logout');
         $router->addRoute('/user/[<id>]', 'User:default');

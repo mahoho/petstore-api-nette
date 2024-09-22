@@ -26,7 +26,8 @@
 		"doctrine/inflector": "^2.0",
 		"guzzlehttp/guzzle": "^7.9",
       	"ext-dom": "*",
-		"servo/fluidxml": "^2.0"
+		"servo/fluidxml": "^2.0",
+		"ramsey/uuid": "^4.7"
     },
 	"require-dev": {
 		"nette/tester": "^2.5"

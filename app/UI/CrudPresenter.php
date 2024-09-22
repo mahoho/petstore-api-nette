@@ -2,6 +2,7 @@
 
 namespace App\UI;
 
+use App\Services\ApiAuthMiddleware;
 use Nette\Application\Attributes\Requires;
 use Nette\Application\UI\Presenter;
 use Nette\DI\InvalidConfigurationException;
@@ -12,39 +13,55 @@ abstract class CrudPresenter extends Presenter {
 
     protected XmlModel $model;
 
-    public function __construct() {
+    private $apiAuthMiddleware;
+
+    public function startup() {
+        parent::startup();
+
+        // Obtain current presenter and action
+        $presenterName = $this->getName();
+        $actionName = $this->getAction();
+
+        // Manually handle the middleware as Nette doesn't have built-in support
+        $this->apiAuthMiddleware->handle($presenterName, $actionName, function() {
+            // Proceed with `startup` logic after middleware
+        });
+    }
+
+    public function __construct(ApiAuthMiddleware $apiAuthMiddleware) {
         parent::__construct();
 
-        if(!$this->modelClass) {
+        if (!$this->modelClass) {
             $className = __CLASS__;
 
             throw new InvalidConfigurationException("\$modelClass property must be set for class $className");
         }
 
         $this->model = new $this->modelClass;
+        $this->apiAuthMiddleware = $apiAuthMiddleware;
     }
 
     public function actionDefault() {
         $id = $this->request->getParameter('id');
         $httpMethod = $this->request->getMethod();
 
-        if($httpMethod === 'GET') {
+        if ($httpMethod === 'GET') {
             $this->actionRead($id);
         }
 
-        if(in_array($httpMethod, ['PUT', 'POST']) && $id) {
+        if (in_array($httpMethod, ['PUT', 'POST']) && $id) {
             $this->actionUpdate($id);
         }
 
-        if(in_array($httpMethod, ['PUT', 'POST']) && $id) {
+        if (in_array($httpMethod, ['PUT', 'POST']) && $id) {
             $this->actionUpdate($id);
         }
 
-        if($httpMethod === 'POST' && !$id) {
+        if ($httpMethod === 'POST' && !$id) {
             $this->actionCreate();
         }
 
-        if($httpMethod === 'DELETE') {
+        if ($httpMethod === 'DELETE') {
             $this->actionDelete($id);
         }
     }

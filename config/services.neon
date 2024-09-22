@@ -1,6 +1,7 @@
 services:
-	- App\Core\RouterFactory::createRouter
-
+    - App\Core\RouterFactory::createRouter
+    - App\Services\ApiTokenAuthenticator
+    - App\Services\ApiAuthMiddleware
 
 search:
 	-	in: %appDir%

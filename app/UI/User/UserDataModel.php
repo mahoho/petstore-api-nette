@@ -3,6 +3,7 @@
 namespace App\UI\User;
 
 use App\DataModels\Support\DataModel;
+use Nette\Security\IIdentity;
 
 
 /**
@@ -15,11 +16,12 @@ use App\DataModels\Support\DataModel;
  * @property string $email
  * @property string $password
  * @property string $phone
+ * @property string $apiToken
  * @property int $userStatus
  *
  * @link     https://openapi-generator.tech
  */
-class UserDataModel extends DataModel {
+class UserDataModel extends DataModel implements IIdentity {
     /**
      * The original name of the model.
      *
@@ -40,7 +42,8 @@ class UserDataModel extends DataModel {
         'email'      => 'string',
         'password'   => 'string',
         'phone'      => 'string',
-        'userStatus' => 'int'
+        'userStatus' => 'int',
+        'apiToken'   => 'string',
     ];
 
     /**
@@ -58,7 +61,9 @@ class UserDataModel extends DataModel {
         'email'      => null,
         'password'   => null,
         'phone'      => null,
-        'userStatus' => 'int32'
+        'userStatus' => 'int32',
+        'apiToken'   => null,
+
     ];
 
     /**
@@ -74,7 +79,8 @@ class UserDataModel extends DataModel {
         'email'      => false,
         'password'   => false,
         'phone'      => false,
-        'userStatus' => false
+        'userStatus' => false,
+        'apiToken'   => false,
     ];
 
     /**
@@ -91,7 +97,8 @@ class UserDataModel extends DataModel {
         'email'      => 'email',
         'password'   => 'password',
         'phone'      => 'phone',
-        'userStatus' => 'userStatus'
+        'userStatus' => 'userStatus',
+        'apiToken'   => 'apiToken',
     ];
 
     /**
@@ -107,7 +114,8 @@ class UserDataModel extends DataModel {
         'email'      => 'setEmail',
         'password'   => 'setPassword',
         'phone'      => 'setPhone',
-        'userStatus' => 'setUserStatus'
+        'userStatus' => 'setUserStatus',
+        'apiToken'   => 'setApiToken',
     ];
 
     /**
@@ -123,7 +131,8 @@ class UserDataModel extends DataModel {
         'email'      => 'getEmail',
         'password'   => 'getPassword',
         'phone'      => 'getPhone',
-        'userStatus' => 'getUserStatus'
+        'userStatus' => 'getUserStatus',
+        'apiToken'   => 'getApiToken',
     ];
 
     /**
@@ -141,6 +150,7 @@ class UserDataModel extends DataModel {
         $this->setIfExists('password', $data ?? [], null);
         $this->setIfExists('phone', $data ?? [], null);
         $this->setIfExists('userStatus', $data ?? [], null);
+        $this->setIfExists('apiToken', $data ?? [], null);
     }
 
     /**
@@ -303,6 +313,15 @@ class UserDataModel extends DataModel {
     }
 
     /**
+     * Gets apiToken
+     *
+     * @return int|null
+     */
+    public function getApiToken() {
+        return $this->container['apiToken'];
+    }
+
+    /**
      * Sets userStatus
      *
      * @param int|null $userStatus UserDataModel Status
@@ -316,6 +335,23 @@ class UserDataModel extends DataModel {
         $this->container['userStatus'] = $userStatus;
 
         return $this;
+    }
+
+    /**
+     * Sets apiToken
+     *
+     * @param int|null $userStatus UserDataModel ApiToken
+     *
+     * @return self
+     */
+    public function setApiToken($apiToken) {
+        $this->container['apiToken'] = $apiToken;
+
+        return $this;
+    }
+
+    function getRoles(): array {
+        return [];
     }
 }
 

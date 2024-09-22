@@ -68,15 +68,16 @@ abstract class XmlModel {
 
         unset($dataPrepared['id']);
 
-        $items = $this->loadItemsFromXml('id');
+        $items = $this->loadItemsFromXml('id') ?? [];
 
-        $maxId = max(array_keys($items));
+        $maxId = $items ? max(array_keys($items)) : 0;
 
-        $dataPrepared['id'] = $maxId + 1;
+        $nextId = $maxId + 1;
+        $dataPrepared['id'] = $nextId;
 
-        $model = new $this->dataModelClass($dataPrepared);
+        $model = $dataPrepared instanceof DataModel ? $dataPrepared : new $this->dataModelClass($dataPrepared);
 
-        $items[$maxId] = $model;
+        $items[$nextId] = $model;
 
         $this->saveXml($items);
 
@@ -91,9 +92,9 @@ abstract class XmlModel {
         }
 
         $dataPrepared = $this->prepareData($data);
-        $model = new $this->dataModelClass($dataPrepared);
+        $model = $dataPrepared instanceof DataModel ? $dataPrepared : new $this->dataModelClass($dataPrepared);
 
-        $items[$model->getId()] = $model;
+        $items[$model->{$this->idProp}] = $model;
 
         $this->saveXml($items);
 
@@ -120,7 +121,7 @@ abstract class XmlModel {
      * @param $data
      * @return mixed
      */
-    public function prepareData(array $data) : array {
+    public function prepareData(DataModel|array $data) {
         return $data;
     }
 
@@ -150,6 +151,10 @@ abstract class XmlModel {
         $result = [];
 
         foreach ($array[$this->elementName] ?? [] as $item) {
+            if(!is_array($item) || empty($item[$keyByProp])) {
+                continue;
+            }
+
             $result[$item[$keyByProp]] = new $this->dataModelClass($item);
         }
 

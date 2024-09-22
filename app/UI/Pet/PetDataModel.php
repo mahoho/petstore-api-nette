@@ -36,9 +36,9 @@ class PetDataModel extends DataModel {
     protected static $openAPITypes = [
         'id'        => 'int',
         'name'      => 'string',
-        'category'  => '\App\ClientModels\Category',
+        'category'  => '\App\UI\Pet\Category',
         'photoUrls' => 'string[]',
-        'tags'      => '\App\ClientModels\Tag[]',
+        'tags'      => '\App\UI\Pet\Tag[]',
         'status'    => 'string'
     ];
     /**
@@ -68,46 +68,6 @@ class PetDataModel extends DataModel {
         'photoUrls' => false,
         'tags'      => false,
         'status'    => false
-    ];
-    /**
-     * Array of attributes where the key is the local name,
-     * and the value is the original name
-     *
-     * @var string[]
-     */
-    protected static $attributeMap = [
-        'id'        => 'id',
-        'name'      => 'name',
-        'category'  => 'category',
-        'photoUrls' => 'photoUrlss',
-        'tags'      => 'tags',
-        'status'    => 'status'
-    ];
-    /**
-     * Array of attributes to setter functions (for deserialization of responses)
-     *
-     * @var string[]
-     */
-    protected static $setters = [
-        'id'        => 'setId',
-        'name'      => 'setName',
-        'category'  => 'setCategory',
-        'photoUrls' => 'setphotoUrlss',
-        'tags'      => 'setTags',
-        'status'    => 'setStatus'
-    ];
-    /**
-     * Array of attributes to getter functions (for serialization of requests)
-     *
-     * @var string[]
-     */
-    protected static $getters = [
-        'id'        => 'getId',
-        'name'      => 'getName',
-        'category'  => 'getCategory',
-        'photoUrls' => 'getphotoUrls',
-        'tags'      => 'getTags',
-        'status'    => 'getStatus'
     ];
 
     /**
@@ -162,140 +122,5 @@ class PetDataModel extends DataModel {
             self::STATUS_PENDING,
             self::STATUS_SOLD,
         ];
-    }
-
-    /**
-     * Gets name
-     *
-     * @return string
-     */
-    public function getName() {
-        return $this->container['name'];
-    }
-
-    /**
-     * Sets name
-     *
-     * @param string $name name
-     *
-     * @return self
-     */
-    public function setName($name) {
-        if (is_null($name)) {
-            throw new \InvalidArgumentException('non-nullable name cannot be null');
-        }
-        $this->container['name'] = $name;
-
-        return $this;
-    }
-
-    /**
-     * Gets category
-     *
-     * @return \App\UI\Pet\CategoryDataModel|null
-     */
-    public function getCategory() {
-        return $this->container['category'];
-    }
-
-    /**
-     * Sets category
-     *
-     * @param \App\UI\Pet\CategoryDataModel|null $category category
-     *
-     * @return self
-     */
-    public function setCategory($category) {
-        if (is_null($category)) {
-            throw new \InvalidArgumentException('non-nullable category cannot be null');
-        }
-        $this->container['category'] = $category;
-
-        return $this;
-    }
-
-    /**
-     * Gets photoUrls
-     *
-     * @return string[]
-     */
-    public function getPhotoUrls() {
-        return $this->container['photoUrls'];
-    }
-
-    /**
-     * Sets photoUrls
-     *
-     * @param string[] $photoUrls photoUrls
-     *
-     * @return self
-     */
-    public function setPhotoUrls($photoUrls) {
-        if (is_null($photoUrls)) {
-            throw new \InvalidArgumentException('non-nullable photoUrls cannot be null');
-        }
-        $this->container['photoUrls'] = $photoUrls;
-
-        return $this;
-    }
-
-    /**
-     * Gets tags
-     *
-     * @return \App\UI\Tag\TagDataModel[]|null
-     */
-    public function getTags() {
-        return $this->container['tags'];
-    }
-
-    /**
-     * Sets tags
-     *
-     * @param \App\UI\Tag\TagDataModel[]|null $tags tags
-     *
-     * @return self
-     */
-    public function setTags($tags) {
-        if (is_null($tags)) {
-            throw new \InvalidArgumentException('non-nullable tags cannot be null');
-        }
-        $this->container['tags'] = $tags;
-
-        return $this;
-    }
-
-    /**
-     * Gets status
-     *
-     * @return string|null
-     */
-    public function getStatus() {
-        return $this->container['status'];
-    }
-
-    /**
-     * Sets status
-     *
-     * @param string|null $status pet status in the store
-     *
-     * @return self
-     */
-    public function setStatus($status) {
-        if (is_null($status)) {
-            throw new \InvalidArgumentException('non-nullable status cannot be null');
-        }
-        $allowedValues = $this->getStatusAllowableValues();
-        if (!in_array($status, $allowedValues, true)) {
-            throw new \InvalidArgumentException(
-                sprintf(
-                    "Invalid value '%s' for 'status', must be one of '%s'",
-                    $status,
-                    implode("', '", $allowedValues)
-                )
-            );
-        }
-        $this->container['status'] = $status;
-
-        return $this;
     }
 }

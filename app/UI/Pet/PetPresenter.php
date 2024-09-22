@@ -44,16 +44,17 @@ class PetPresenter extends CrudPresenter {
 
         $fileRelPath = "/images/$safeFileName";
 
+        /** @var PetDataModel $pet */
         $pet = $this->model->getById($id);
         if (!$pet) {
             $this->getHttpResponse()->setCode(404);
             $this->sendJson(['errors' => ['id' => 'Pet not found.']]);
         }
 
-        $photoUrls = $pet->getPhotoUrls();
+        $photoUrls = $pet->photoUrls;
         $photoUrls[] = $fileRelPath;
 
-        $pet->setPhotoUrls($photoUrls);
+        $pet->photoUrls = $photoUrls;
         $this->model->updateItem($pet);
 
         $this->sendJson(['message' => 'Image uploaded successfully.']);

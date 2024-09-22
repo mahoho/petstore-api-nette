@@ -82,8 +82,7 @@ class ObjectSerializer {
             if ($data instanceof ModelInterface) {
                 $formats = $data::openAPIFormats();
                 foreach ($data::openAPITypes() as $property => $openAPIType) {
-                    $getter = $data::getters()[$property];
-                    $value = $data->$getter();
+                    $value = $data->{$property};
                     if ($value !== null && !in_array($openAPIType, [
                             '\DateTime',
                             '\SplFileObject',
@@ -111,7 +110,9 @@ class ObjectSerializer {
                         }
                     }
                     if (($data::isNullable($property) && $data->isNullableSetToNull($property)) || $value !== null) {
-                        $values[$data::attributeMap()[$property]] = self::sanitizeForSerialization($value, $openAPIType, $formats[$property]);
+                        $mappedProperty = $data::attributeMap()[$property] ?? $property;
+
+                        $values[$mappedProperty] = self::sanitizeForSerialization($value, $openAPIType, $formats[$property]);
                     }
                 }
             } else {
@@ -519,23 +520,19 @@ class ObjectSerializer {
         /** @var ModelInterface $instance */
         $instance = new $class();
         foreach ($instance::openAPITypes() as $property => $type) {
-            $propertySetter = $instance::setters()[$property];
+            $mappedProp = $instance::attributeMap()[$property] ?? $property;
 
-            if (!isset($propertySetter)) {
-                continue;
-            }
-
-            if (!isset($data->{$instance::attributeMap()[$property]})) {
+            if (!isset($data->{$mappedProp})) {
                 if ($instance::isNullable($property)) {
-                    $instance->$propertySetter(null);
+                    $instance->$property = null;
                 }
 
                 continue;
             }
 
-            if (isset($data->{$instance::attributeMap()[$property]})) {
-                $propertyValue = $data->{$instance::attributeMap()[$property]};
-                $instance->$propertySetter(self::deserialize($propertyValue, $type, null));
+            if (isset($data->{$mappedProp})) {
+                $propertyValue = $data->{$mappedProp};
+                $instance->{$property} = self::deserialize($propertyValue, $type, null);
             }
         }
         return $instance;

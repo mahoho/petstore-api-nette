@@ -31,7 +31,7 @@ class UserPresenter extends CrudPresenter {
         $this->sendJson($createdUsers);
     }
 
-    #[Requires(methods: 'GET')]
+    #[Requires(methods: ['GET', 'POST'])]
     public function actionLogin() {
         $userName = $this->request->getParameter('username');
         $password = $this->request->getParameter('password');

@@ -17,6 +17,13 @@ class UserPresenter extends CrudPresenter {
         $createdUsers = [];
 
         foreach ($data as $userData) {
+            unset($userData['id']);
+
+            if($invalidProperties = $this->isValidData($userData)) {
+                $this->getHttpResponse()->setCode(422);
+                $this->sendJson(['errors' => $invalidProperties]);
+            }
+
             $user = $this->model->addItem($userData);
             $createdUsers[] = $user;
         }
@@ -48,5 +55,33 @@ class UserPresenter extends CrudPresenter {
         $this->model->updateItem($user);
 
         $this->sendJson(['message' => 'Logged out']);
+    }
+
+    protected function isValidData(array $data): array {
+        $result = parent::isValidData($data);
+        $userName = $data['username'] ?? "";
+
+        // username is required will be a part validation messages
+        if(!$userName){
+            return $result;
+        }
+
+        $id = $data['id'] ?? '';
+
+        $userNameExists = false;
+        // username should be unique
+        $allItems = $this->model->loadItemsFromXml('id');
+        foreach ($allItems as $item) {
+            if($item['username'] === $userName && (!$id || $id !== $item['id'])){
+                $userNameExists = true;
+                break;
+            }
+        }
+
+        if($userNameExists){
+            $result['username'] = "username '$userName' already exists";
+        }
+
+        return $result;
     }
 }

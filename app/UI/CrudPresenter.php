@@ -31,13 +31,12 @@ abstract class CrudPresenter extends Presenter {
     public function startup() {
         parent::startup();
 
-        // Obtain current presenter and action
         $presenterName = $this->getName();
         $actionName = $this->getAction();
 
         // Manually handle the middleware as Nette doesn't have built-in support
         $this->apiAuthMiddleware->handle($presenterName, $actionName, function () {
-            // Proceed with `startup` logic after middleware
+
         });
     }
 
@@ -66,25 +65,20 @@ abstract class CrudPresenter extends Presenter {
         }
     }
 
+    #[Requires(methods: 'GET')]
     public function actionRead(int $id = null): void {
-        $request = $this->getHttpRequest();
-
-        if ($request->isMethod('POST')) {
-            $this->actionCreate();
-            return;
-        }
-
-        if ($id !== null) {
-            $item = $this->model->getById($id);
-            if ($item) {
-                $this->sendJson($item);
-            } else {
-                $this->getHttpResponse()->setCode(404);
-                $this->sendJson(['error' => 'Item not found']);
-            }
-        } else {
+        if(!$id) {
             $items = $this->model->getAll();
             $this->sendJson($items);
+        }
+
+        $item = $this->model->getById($id);
+
+        if ($item) {
+            $this->sendJson($item);
+        } else {
+            $this->getHttpResponse()->setCode(404);
+            $this->sendJson(['error' => 'Item not found']);
         }
     }
 
@@ -96,17 +90,11 @@ abstract class CrudPresenter extends Presenter {
         if (!empty($invalidProperties)) {
             $this->getHttpResponse()->setCode(422);
             $this->sendJson(['errors' => $invalidProperties]);
-            return;
         }
 
         $this->model->addItem($data);
         $this->getHttpResponse()->setCode(201);
         $this->sendJson(['message' => 'Item created']);
-    }
-
-    protected function isValidData(array $data): array {
-        $dataModel = new $this->dataModelClass($data);
-        return $dataModel->listInvalidProperties();
     }
 
     #[Requires(methods: 'PUT')]
@@ -117,7 +105,6 @@ abstract class CrudPresenter extends Presenter {
         if (!empty($invalidProperties)) {
             $this->getHttpResponse()->setCode(422);
             $this->sendJson(['errors' => $invalidProperties]);
-            return;
         }
 
         $this->model->updateItem($data);
@@ -128,5 +115,10 @@ abstract class CrudPresenter extends Presenter {
     public function actionDelete(int|string $id): void {
         $this->model->deleteItem($id);
         $this->sendJson(['message' => 'Item deleted']);
+    }
+
+    protected function isValidData(array $data): array {
+        $dataModel = new $this->dataModelClass($data);
+        return $dataModel->listInvalidProperties();
     }
 }

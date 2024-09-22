@@ -1,8 +1,8 @@
 <?php
+
 namespace App\DataModels;
 
 use App\DataModels\Support\DataModel;
-use App\DataModels\Support\ObjectSerializer;
 
 
 /**
@@ -92,6 +92,18 @@ class ApiResponse extends DataModel {
     ];
 
     /**
+     * Constructor
+     *
+     * @param mixed[] $data Associated array of property values
+     *                      initializing the model
+     */
+    public function __construct(array $data = null) {
+        $this->setIfExists('code', $data ?? [], null);
+        $this->setIfExists('type', $data ?? [], null);
+        $this->setIfExists('message', $data ?? [], null);
+    }
+
+    /**
      * Array of attributes where the key is the local name,
      * and the value is the original name
      *
@@ -117,18 +129,6 @@ class ApiResponse extends DataModel {
      */
     public static function getters() {
         return self::$getters;
-    }
-
-    /**
-     * Constructor
-     *
-     * @param mixed[] $data Associated array of property values
-     *                      initializing the model
-     */
-    public function __construct(array $data = null) {
-        $this->setIfExists('code', $data ?? [], null);
-        $this->setIfExists('type', $data ?? [], null);
-        $this->setIfExists('message', $data ?? [], null);
     }
 
     /**

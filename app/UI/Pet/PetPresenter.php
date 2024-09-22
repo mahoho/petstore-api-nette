@@ -33,7 +33,7 @@ class PetPresenter extends CrudPresenter {
         /** @var FileUpload $file */
         $file = $this->request->getFile('file');
 
-        if(!$file || !$file->isImage()) {
+        if (!$file || !$file->isImage()) {
             $this->getHttpResponse()->setCode(422);
             $this->sendJson(['errors' => ['file' => 'File is not an image.']]);
         }

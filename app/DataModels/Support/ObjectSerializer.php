@@ -126,35 +126,6 @@ class ObjectSerializer {
     }
 
     /**
-     * Sanitize filename by removing path.
-     * e.g. ../../sun.gif becomes sun.gif
-     *
-     * @param string $filename filename to be sanitized
-     *
-     * @return string the sanitized filename
-     */
-    public static function sanitizeFilename($filename) {
-        if (preg_match("/.*[\/\\\\](.*)$/", $filename, $match)) {
-            return $match[1];
-        }
-
-        return $filename;
-    }
-
-    /**
-     * Shorter timestamp microseconds to 6 digits length.
-     *
-     * @param string $timestamp Original timestamp
-     *
-     * @return string the shorten timestamp
-     */
-    public static function sanitizeTimestamp($timestamp) {
-        if (!is_string($timestamp)) return $timestamp;
-
-        return preg_replace('/(:\d{2}.\d{6})\d*/', '$1', $timestamp);
-    }
-
-    /**
      * Take value and turn it into a string suitable for inclusion in
      * the path, by url-encoding.
      *
@@ -167,45 +138,25 @@ class ObjectSerializer {
     }
 
     /**
-     * Checks if a value is empty, based on its OpenAPI type.
+     * Take value and turn it into a string suitable for inclusion in
+     * the parameter. If it's a string, pass through unchanged
+     * If it's a datetime object, format it in ISO8601
+     * If it's a boolean, convert it to "true" or "false".
      *
-     * @param mixed $value
-     * @param string $openApiType
+     * @param float|int|bool|\DateTime $value the value of the parameter
      *
-     * @return bool true if $value is empty
+     * @return string the header string
      */
-    private static function isEmptyValue($value, string $openApiType): bool {
-        # If empty() returns false, it is not empty regardless of its type.
-        if (!empty($value)) {
-            return false;
+    public static function toString($value) {
+        if ($value instanceof \DateTime) { // datetime in ISO8601 format
+            return $value->format(self::$dateTimeFormat);
         }
 
-        # Null is always empty, as we cannot send a real "null" value in a query parameter.
-        if ($value === null) {
-            return true;
+        if (is_bool($value)) {
+            return $value ? 'true' : 'false';
         }
 
-        switch ($openApiType) {
-            # For numeric values, false and '' are considered empty.
-            # This comparison is safe for floating point values, since the previous call to empty() will
-            # filter out values that don't match 0.
-            case 'int':
-            case 'integer':
-                return $value !== 0;
-
-            case 'number':
-            case 'float':
-                return $value !== 0 && $value !== 0.0;
-
-            # For boolean values, '' is considered empty
-            case 'bool':
-            case 'boolean':
-                return !in_array($value, [false, 0], true);
-
-            # For all the other types, any value at this point can be considered empty.
-            default:
-                return true;
-        }
+        return (string)$value;
     }
 
     /**
@@ -293,6 +244,48 @@ class ObjectSerializer {
     }
 
     /**
+     * Checks if a value is empty, based on its OpenAPI type.
+     *
+     * @param mixed $value
+     * @param string $openApiType
+     *
+     * @return bool true if $value is empty
+     */
+    private static function isEmptyValue($value, string $openApiType): bool {
+        # If empty() returns false, it is not empty regardless of its type.
+        if (!empty($value)) {
+            return false;
+        }
+
+        # Null is always empty, as we cannot send a real "null" value in a query parameter.
+        if ($value === null) {
+            return true;
+        }
+
+        switch ($openApiType) {
+            # For numeric values, false and '' are considered empty.
+            # This comparison is safe for floating point values, since the previous call to empty() will
+            # filter out values that don't match 0.
+            case 'int':
+            case 'integer':
+                return $value !== 0;
+
+            case 'number':
+            case 'float':
+                return $value !== 0 && $value !== 0.0;
+
+            # For boolean values, '' is considered empty
+            case 'bool':
+            case 'boolean':
+                return !in_array($value, [false, 0], true);
+
+            # For all the other types, any value at this point can be considered empty.
+            default:
+                return true;
+        }
+    }
+
+    /**
      * Convert boolean value to format for query string.
      *
      * @param bool $value Boolean value
@@ -305,63 +298,6 @@ class ObjectSerializer {
         }
 
         return (int)$value;
-    }
-
-    /**
-     * Take value and turn it into a string suitable for inclusion in
-     * the header. If it's a string, pass through unchanged
-     * If it's a datetime object, format it in ISO8601
-     *
-     * @param string $value a string which will be part of the header
-     *
-     * @return string the header string
-     */
-    public static function toHeaderValue($value) {
-        $callable = [$value, 'toHeaderValue'];
-        if (is_callable($callable)) {
-            return $callable();
-        }
-
-        return self::toString($value);
-    }
-
-    /**
-     * Take value and turn it into a string suitable for inclusion in
-     * the http body (form parameter). If it's a string, pass through unchanged
-     * If it's a datetime object, format it in ISO8601
-     *
-     * @param string|\SplFileObject $value the value of the form parameter
-     *
-     * @return string the form string
-     */
-    public static function toFormValue($value) {
-        if ($value instanceof \SplFileObject) {
-            return $value->getRealPath();
-        }
-
-        return self::toString($value);
-    }
-
-    /**
-     * Take value and turn it into a string suitable for inclusion in
-     * the parameter. If it's a string, pass through unchanged
-     * If it's a datetime object, format it in ISO8601
-     * If it's a boolean, convert it to "true" or "false".
-     *
-     * @param float|int|bool|\DateTime $value the value of the parameter
-     *
-     * @return string the header string
-     */
-    public static function toString($value) {
-        if ($value instanceof \DateTime) { // datetime in ISO8601 format
-            return $value->format(self::$dateTimeFormat);
-        }
-
-        if (is_bool($value)) {
-            return $value ? 'true' : 'false';
-        }
-
-        return (string)$value;
     }
 
     /**
@@ -398,6 +334,41 @@ class ObjectSerializer {
             default:
                 return implode(',', $collection);
         }
+    }
+
+    /**
+     * Take value and turn it into a string suitable for inclusion in
+     * the header. If it's a string, pass through unchanged
+     * If it's a datetime object, format it in ISO8601
+     *
+     * @param string $value a string which will be part of the header
+     *
+     * @return string the header string
+     */
+    public static function toHeaderValue($value) {
+        $callable = [$value, 'toHeaderValue'];
+        if (is_callable($callable)) {
+            return $callable();
+        }
+
+        return self::toString($value);
+    }
+
+    /**
+     * Take value and turn it into a string suitable for inclusion in
+     * the http body (form parameter). If it's a string, pass through unchanged
+     * If it's a datetime object, format it in ISO8601
+     *
+     * @param string|\SplFileObject $value the value of the form parameter
+     *
+     * @return string the form string
+     */
+    public static function toFormValue($value) {
+        if ($value instanceof \SplFileObject) {
+            return $value->getRealPath();
+        }
+
+        return self::toString($value);
     }
 
     /**
@@ -568,6 +539,35 @@ class ObjectSerializer {
             }
         }
         return $instance;
+    }
+
+    /**
+     * Shorter timestamp microseconds to 6 digits length.
+     *
+     * @param string $timestamp Original timestamp
+     *
+     * @return string the shorten timestamp
+     */
+    public static function sanitizeTimestamp($timestamp) {
+        if (!is_string($timestamp)) return $timestamp;
+
+        return preg_replace('/(:\d{2}.\d{6})\d*/', '$1', $timestamp);
+    }
+
+    /**
+     * Sanitize filename by removing path.
+     * e.g. ../../sun.gif becomes sun.gif
+     *
+     * @param string $filename filename to be sanitized
+     *
+     * @return string the sanitized filename
+     */
+    public static function sanitizeFilename($filename) {
+        if (preg_match("/.*[\/\\\\](.*)$/", $filename, $match)) {
+            return $match[1];
+        }
+
+        return $filename;
     }
 
     /**

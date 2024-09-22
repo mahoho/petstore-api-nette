@@ -1,4 +1,5 @@
 <?php
+
 namespace App\UI\Order;
 
 use App\DataModels\Support\DataModel;
@@ -15,13 +16,15 @@ use App\DataModels\Support\DataModel;
  * @link     https://openapi-generator.tech
  */
 class OrderDataModel extends DataModel {
+    public const STATUS_PLACED = 'placed';
+    public const STATUS_APPROVED = 'approved';
+    public const STATUS_DELIVERED = 'delivered';
     /**
      * The original name of the model.
      *
      * @var string
      */
     protected static $openAPIModelName = 'OrderDataModel';
-
     /**
      * Array of property to type mappings. Used for (de)serialization
      *
@@ -35,7 +38,6 @@ class OrderDataModel extends DataModel {
         'status'   => 'string',
         'complete' => 'bool'
     ];
-
     /**
      * Array of property to format mappings. Used for (de)serialization
      *
@@ -51,7 +53,6 @@ class OrderDataModel extends DataModel {
         'status'   => null,
         'complete' => null
     ];
-
     /**
      * Array of nullable properties. Used for (de)serialization
      *
@@ -65,8 +66,6 @@ class OrderDataModel extends DataModel {
         'status'   => false,
         'complete' => false
     ];
-
-
     /**
      * Array of attributes where the key is the local name,
      * and the value is the original name
@@ -81,7 +80,6 @@ class OrderDataModel extends DataModel {
         'status'   => 'status',
         'complete' => 'complete'
     ];
-
     /**
      * Array of attributes to setter functions (for deserialization of responses)
      *
@@ -95,7 +93,6 @@ class OrderDataModel extends DataModel {
         'status'   => 'setStatus',
         'complete' => 'setComplete'
     ];
-
     /**
      * Array of attributes to getter functions (for serialization of requests)
      *
@@ -109,33 +106,6 @@ class OrderDataModel extends DataModel {
         'status'   => 'getStatus',
         'complete' => 'getComplete'
     ];
-
-
-    /**
-     * The original name of the model.
-     *
-     * @return string
-     */
-    public function getModelName() {
-        return self::$openAPIModelName;
-    }
-
-    public const STATUS_PLACED = 'placed';
-    public const STATUS_APPROVED = 'approved';
-    public const STATUS_DELIVERED = 'delivered';
-
-    /**
-     * Gets allowable values of the enum
-     *
-     * @return string[]
-     */
-    public function getStatusAllowableValues() {
-        return [
-            self::STATUS_PLACED,
-            self::STATUS_APPROVED,
-            self::STATUS_DELIVERED,
-        ];
-    }
 
     /**
      * Constructor
@@ -152,6 +122,14 @@ class OrderDataModel extends DataModel {
         $this->setIfExists('complete', $data ?? [], null);
     }
 
+    /**
+     * The original name of the model.
+     *
+     * @return string
+     */
+    public function getModelName() {
+        return self::$openAPIModelName;
+    }
 
     /**
      * Gets petId
@@ -261,6 +239,19 @@ class OrderDataModel extends DataModel {
         $this->container['status'] = $status;
 
         return $this;
+    }
+
+    /**
+     * Gets allowable values of the enum
+     *
+     * @return string[]
+     */
+    public function getStatusAllowableValues() {
+        return [
+            self::STATUS_PLACED,
+            self::STATUS_APPROVED,
+            self::STATUS_DELIVERED,
+        ];
     }
 
     /**

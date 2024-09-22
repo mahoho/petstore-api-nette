@@ -6,12 +6,12 @@ use App\UI\CrudPresenter;
 use Nette\Application\Attributes\Requires;
 use Nette\Security\AuthenticationException;
 
-class UserPresenter  extends CrudPresenter {
+class UserPresenter extends CrudPresenter {
     protected string $modelClass = UserModel::class;
     protected string $dataModelClass = UserDataModel::class;
 
     #[Requires(methods: 'POST')]
-    public function actionCreateWithList(){
+    public function actionCreateWithList() {
         $data = json_decode($this->getHttpRequest()->getRawBody(), true);
 
         $createdUsers = [];
@@ -25,7 +25,7 @@ class UserPresenter  extends CrudPresenter {
     }
 
     #[Requires(methods: 'GET')]
-    public function actionLogin(){
+    public function actionLogin() {
         $userName = $this->request->getParameter('username');
         $password = $this->request->getParameter('password');
 
@@ -41,7 +41,7 @@ class UserPresenter  extends CrudPresenter {
     }
 
     #[Requires(methods: 'GET')]
-    public function actionLogout(){
+    public function actionLogout() {
         $user = $this->user->getIdentity();
         $user->apiToken = null;
 

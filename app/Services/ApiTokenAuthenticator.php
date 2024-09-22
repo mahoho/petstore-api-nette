@@ -7,7 +7,6 @@ use App\UI\User\UserModel;
 use Nette\Security\AuthenticationException;
 use Nette\Security\Authenticator;
 use Nette\Security\IIdentity;
-use Nette\Utils\Strings;
 use Ramsey\Uuid\Uuid;
 
 class ApiTokenAuthenticator implements Authenticator {
@@ -21,11 +20,11 @@ class ApiTokenAuthenticator implements Authenticator {
         /** @var UserDataModel $user */
         $user = $this->userRepository->getById($userName);
 
-        if(!$user) {
+        if (!$user) {
             throw new AuthenticationException('Invalid username/password supplied.');
         }
 
-        if(!password_verify($password, $user->getPassword())) {
+        if (!password_verify($password, $user->getPassword())) {
             throw new AuthenticationException('Invalid username/password supplied.');
         }
 

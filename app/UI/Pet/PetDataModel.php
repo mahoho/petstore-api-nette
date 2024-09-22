@@ -19,13 +19,15 @@ use App\UI\Tag\TagDataModel;
  * @link     https://openapi-generator.tech
  */
 class PetDataModel extends DataModel {
+    public const STATUS_AVAILABLE = 'available';
+    public const STATUS_PENDING = 'pending';
+    public const STATUS_SOLD = 'sold';
     /**
      * The original name of the model.
      *
      * @var string
      */
     protected static $openAPIModelName = 'Pet';
-
     /**
      * Array of property to type mappings. Used for (de)serialization
      *
@@ -39,7 +41,6 @@ class PetDataModel extends DataModel {
         'tags'      => '\App\ClientModels\Tag[]',
         'status'    => 'string'
     ];
-
     /**
      * Array of property to format mappings. Used for (de)serialization
      *
@@ -55,7 +56,6 @@ class PetDataModel extends DataModel {
         'tags'      => null,
         'status'    => null
     ];
-
     /**
      * Array of nullable properties. Used for (de)serialization
      *
@@ -69,7 +69,6 @@ class PetDataModel extends DataModel {
         'tags'      => false,
         'status'    => false
     ];
-
     /**
      * Array of attributes where the key is the local name,
      * and the value is the original name
@@ -84,7 +83,6 @@ class PetDataModel extends DataModel {
         'tags'      => 'tags',
         'status'    => 'status'
     ];
-
     /**
      * Array of attributes to setter functions (for deserialization of responses)
      *
@@ -98,7 +96,6 @@ class PetDataModel extends DataModel {
         'tags'      => 'setTags',
         'status'    => 'setStatus'
     ];
-
     /**
      * Array of attributes to getter functions (for serialization of requests)
      *
@@ -112,23 +109,6 @@ class PetDataModel extends DataModel {
         'tags'      => 'getTags',
         'status'    => 'getStatus'
     ];
-
-    public const STATUS_AVAILABLE = 'available';
-    public const STATUS_PENDING = 'pending';
-    public const STATUS_SOLD = 'sold';
-
-    /**
-     * Gets allowable values of the enum
-     *
-     * @return string[]
-     */
-    public function getStatusAllowableValues() {
-        return [
-            self::STATUS_AVAILABLE,
-            self::STATUS_PENDING,
-            self::STATUS_SOLD,
-        ];
-    }
 
     /**
      * Constructor
@@ -169,6 +149,19 @@ class PetDataModel extends DataModel {
         }
 
         return $invalidProperties;
+    }
+
+    /**
+     * Gets allowable values of the enum
+     *
+     * @return string[]
+     */
+    public function getStatusAllowableValues() {
+        return [
+            self::STATUS_AVAILABLE,
+            self::STATUS_PENDING,
+            self::STATUS_SOLD,
+        ];
     }
 
     /**

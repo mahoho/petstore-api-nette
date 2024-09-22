@@ -18,23 +18,12 @@ abstract class DataModel implements ModelInterface, ArrayAccess, \JsonSerializab
     protected static $setters;
 
     protected static $getters;
-
-    /**
-     * The original name of the model.
-     *
-     * @return string
-     */
-    public function getModelName() {
-        return static::$openAPIModelName;
-    }
-
     /**
      * Associative array for storing property values
      *
      * @var mixed[]
      */
     protected $container = [];
-
     /**
      * If a nullable field gets set to null, insert it here
      *
@@ -58,53 +47,6 @@ abstract class DataModel implements ModelInterface, ArrayAccess, \JsonSerializab
      */
     public static function openAPIFormats() {
         return static::$openAPIFormats;
-    }
-
-    /**
-     * Array of nullable properties
-     *
-     * @return array
-     */
-    protected static function openAPINullables(): array {
-        return static::$openAPINullables;
-    }
-
-    /**
-     * Array of nullable field names deliberately set to null
-     *
-     * @return boolean[]
-     */
-    protected function getOpenAPINullablesSetToNull(): array {
-        return $this->openAPINullablesSetToNull;
-    }
-
-    /**
-     * Setter - Array of nullable field names deliberately set to null
-     *
-     * @param boolean[] $openAPINullablesSetToNull
-     */
-    protected function setOpenAPINullablesSetToNull(array $openAPINullablesSetToNull): void {
-        $this->openAPINullablesSetToNull = $openAPINullablesSetToNull;
-    }
-
-    /**
-     * Checks if a property is nullable
-     *
-     * @param string $property
-     * @return bool
-     */
-    public static function isNullable(string $property): bool {
-        return static::openAPINullables()[$property] ?? false;
-    }
-
-    /**
-     * Checks if a nullable property is set to null.
-     *
-     * @param string $property
-     * @return bool
-     */
-    public function isNullableSetToNull(string $property): bool {
-        return in_array($property, $this->getOpenAPINullablesSetToNull(), true);
     }
 
     /**
@@ -136,29 +78,40 @@ abstract class DataModel implements ModelInterface, ArrayAccess, \JsonSerializab
     }
 
     /**
-     * Sets $this->container[$variableName] to the given data or to the given default Value; if $variableName
-     * is nullable and its value is set to null in the $fields array, then mark it as "set to null" in the
-     * $this->openAPINullablesSetToNull array
+     * The original name of the model.
      *
-     * @param string $variableName
-     * @param array $fields
-     * @param mixed $defaultValue
+     * @return string
      */
-    protected function setIfExists(string $variableName, array $fields, $defaultValue): void {
-        if (static::isNullable($variableName) && array_key_exists($variableName, $fields) && is_null($fields[$variableName])) {
-            $this->openAPINullablesSetToNull[] = $variableName;
-        }
-
-        $this->container[$variableName] = $fields[$variableName] ?? $defaultValue;
+    public function getModelName() {
+        return static::$openAPIModelName;
     }
 
     /**
-     * Show all the invalid properties with reasons.
+     * Checks if a nullable property is set to null.
      *
-     * @return array invalid properties with reasons
+     * @param string $property
+     * @return bool
      */
-    public function listInvalidProperties() {
-        return [];
+    public function isNullableSetToNull(string $property): bool {
+        return in_array($property, $this->getOpenAPINullablesSetToNull(), true);
+    }
+
+    /**
+     * Array of nullable field names deliberately set to null
+     *
+     * @return boolean[]
+     */
+    protected function getOpenAPINullablesSetToNull(): array {
+        return $this->openAPINullablesSetToNull;
+    }
+
+    /**
+     * Setter - Array of nullable field names deliberately set to null
+     *
+     * @param boolean[] $openAPINullablesSetToNull
+     */
+    protected function setOpenAPINullablesSetToNull(array $openAPINullablesSetToNull): void {
+        $this->openAPINullablesSetToNull = $openAPINullablesSetToNull;
     }
 
     /**
@@ -171,6 +124,14 @@ abstract class DataModel implements ModelInterface, ArrayAccess, \JsonSerializab
         return count($this->listInvalidProperties()) === 0;
     }
 
+    /**
+     * Show all the invalid properties with reasons.
+     *
+     * @return array invalid properties with reasons
+     */
+    public function listInvalidProperties() {
+        return [];
+    }
 
     /**
      * Gets id
@@ -263,6 +224,10 @@ abstract class DataModel implements ModelInterface, ArrayAccess, \JsonSerializab
         unset($this->container[$offset]);
     }
 
+    public function toArray() {
+        return json_decode(json_encode($this->jsonSerialize()), true);
+    }
+
     /**
      * Serializes the object to a value that can be serialized natively by json_encode().
      * @link https://www.php.net/manual/en/jsonserializable.jsonserialize.php
@@ -273,10 +238,6 @@ abstract class DataModel implements ModelInterface, ArrayAccess, \JsonSerializab
     #[\ReturnTypeWillChange]
     public function jsonSerialize() {
         return ObjectSerializer::sanitizeForSerialization($this);
-    }
-
-    public function toArray() {
-        return json_decode(json_encode($this->jsonSerialize()), true);
     }
 
     /**
@@ -297,5 +258,41 @@ abstract class DataModel implements ModelInterface, ArrayAccess, \JsonSerializab
      */
     public function toHeaderValue() {
         return json_encode(ObjectSerializer::sanitizeForSerialization($this));
+    }
+
+    /**
+     * Sets $this->container[$variableName] to the given data or to the given default Value; if $variableName
+     * is nullable and its value is set to null in the $fields array, then mark it as "set to null" in the
+     * $this->openAPINullablesSetToNull array
+     *
+     * @param string $variableName
+     * @param array $fields
+     * @param mixed $defaultValue
+     */
+    protected function setIfExists(string $variableName, array $fields, $defaultValue): void {
+        if (static::isNullable($variableName) && array_key_exists($variableName, $fields) && is_null($fields[$variableName])) {
+            $this->openAPINullablesSetToNull[] = $variableName;
+        }
+
+        $this->container[$variableName] = $fields[$variableName] ?? $defaultValue;
+    }
+
+    /**
+     * Checks if a property is nullable
+     *
+     * @param string $property
+     * @return bool
+     */
+    public static function isNullable(string $property): bool {
+        return static::openAPINullables()[$property] ?? false;
+    }
+
+    /**
+     * Array of nullable properties
+     *
+     * @return array
+     */
+    protected static function openAPINullables(): array {
+        return static::$openAPINullables;
     }
 }

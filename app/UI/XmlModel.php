@@ -22,13 +22,13 @@ abstract class XmlModel {
     private string $elementName;
 
     public function __construct() {
-        if(!$this->xmlFileName) {
+        if (!$this->xmlFileName) {
             $className = __CLASS__;
 
             throw new InvalidConfigurationException("\$xmlFileName property must be set for class $className");
         }
 
-        if(!$this->dataModelClass) {
+        if (!$this->dataModelClass) {
             $className = __CLASS__;
 
             throw new InvalidConfigurationException("\$dataModelClass property must be set for class $className");
@@ -43,7 +43,7 @@ abstract class XmlModel {
     /**
      * @return array<int, DataModel>
      */
-    public function getAll() : array {
+    public function getAll(): array {
         $items = $this->loadItemsFromXml();
 
         if (!$items) {
@@ -53,7 +53,43 @@ abstract class XmlModel {
         return array_values($items);
     }
 
-    public function getById($id) : ?DataModel {
+    /**
+     * Return collection of items keyed by ID
+     *
+     * @return array<int, DataModel>
+     */
+    public function loadItemsFromXml($keyByProp = null): ?array {
+        if (!file_exists($this->xmlFile)) {
+            return null;
+        }
+
+        $keyByProp = $keyByProp ?? $this->idProp;
+
+        $xmlString = file_get_contents($this->xmlFile);
+
+        $array = XmlToArray::convert($xmlString, [
+            'tags'             => '',
+            'photoUrl'         => 'photoUrls',
+            $this->elementName => ""
+        ], [
+            'tags'     => '',
+            'photoUrl' => 'photoUrls'
+        ]);
+
+        $result = [];
+
+        foreach ($array[$this->elementName] ?? [] as $item) {
+            if (!is_array($item) || empty($item[$keyByProp])) {
+                continue;
+            }
+
+            $result[$item[$keyByProp]] = new $this->dataModelClass($item);
+        }
+
+        return $result;
+    }
+
+    public function getById($id): ?DataModel {
         $items = $this->loadItemsFromXml();
 
         if (!$items) {
@@ -63,7 +99,7 @@ abstract class XmlModel {
         return $items[$id] ?? null;
     }
 
-    public function addItem($data) : DataModel {
+    public function addItem($data): DataModel {
         $dataPrepared = $this->prepareData($data);
 
         unset($dataPrepared['id']);
@@ -84,37 +120,6 @@ abstract class XmlModel {
         return $model;
     }
 
-    public function updateItem($data) : ?DataModel {
-        $items = $this->loadItemsFromXml();
-
-        if (!$items) {
-            return null;
-        }
-
-        $dataPrepared = $this->prepareData($data);
-        $model = $dataPrepared instanceof DataModel ? $dataPrepared : new $this->dataModelClass($dataPrepared);
-
-        $items[$model->{$this->idProp}] = $model;
-
-        $this->saveXml($items);
-
-        return $model;
-    }
-
-    public function deleteItem($id) :bool {
-        $items = $this->loadItemsFromXml();
-
-        if (!$items) {
-            return false;
-        }
-
-        unset($items[$id]);
-
-        $this->saveXml($items);
-
-        return true;
-    }
-
     /**
      * Hook to modify data before create/update if needed
      *
@@ -123,42 +128,6 @@ abstract class XmlModel {
      */
     public function prepareData(DataModel|array $data) {
         return $data;
-    }
-
-    /**
-     * Return collection of items keyed by ID
-     *
-     * @return array<int, DataModel>
-     */
-    public function loadItemsFromXml($keyByProp = null) : ?array {
-        if(!file_exists($this->xmlFile)) {
-            return null;
-        }
-
-        $keyByProp = $keyByProp ?? $this->idProp;
-
-        $xmlString = file_get_contents($this->xmlFile);
-
-        $array = XmlToArray::convert($xmlString, [
-            'tags' => '',
-            'photoUrl' => 'photoUrls',
-            $this->elementName => ""
-        ], [
-            'tags' => '',
-            'photoUrl' => 'photoUrls'
-        ]);
-
-        $result = [];
-
-        foreach ($array[$this->elementName] ?? [] as $item) {
-            if(!is_array($item) || empty($item[$keyByProp])) {
-                continue;
-            }
-
-            $result[$item[$keyByProp]] = new $this->dataModelClass($item);
-        }
-
-        return $result;
     }
 
     /**
@@ -178,5 +147,36 @@ abstract class XmlModel {
         $root->addChild($xmlItems);
 
         $xml->save($this->xmlFile);
+    }
+
+    public function updateItem($data): ?DataModel {
+        $items = $this->loadItemsFromXml();
+
+        if (!$items) {
+            return null;
+        }
+
+        $dataPrepared = $this->prepareData($data);
+        $model = $dataPrepared instanceof DataModel ? $dataPrepared : new $this->dataModelClass($dataPrepared);
+
+        $items[$model->{$this->idProp}] = $model;
+
+        $this->saveXml($items);
+
+        return $model;
+    }
+
+    public function deleteItem($id): bool {
+        $items = $this->loadItemsFromXml();
+
+        if (!$items) {
+            return false;
+        }
+
+        unset($items[$id]);
+
+        $this->saveXml($items);
+
+        return true;
     }
 }

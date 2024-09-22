@@ -7,6 +7,5 @@ namespace App\UI\Home;
 use Nette;
 
 
-final class HomePresenter extends Nette\Application\UI\Presenter
-{
+final class HomePresenter extends Nette\Application\UI\Presenter {
 }

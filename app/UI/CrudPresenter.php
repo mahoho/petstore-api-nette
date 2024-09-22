@@ -15,19 +15,6 @@ abstract class CrudPresenter extends Presenter {
 
     private $apiAuthMiddleware;
 
-    public function startup() {
-        parent::startup();
-
-        // Obtain current presenter and action
-        $presenterName = $this->getName();
-        $actionName = $this->getAction();
-
-        // Manually handle the middleware as Nette doesn't have built-in support
-        $this->apiAuthMiddleware->handle($presenterName, $actionName, function() {
-            // Proceed with `startup` logic after middleware
-        });
-    }
-
     public function __construct(ApiAuthMiddleware $apiAuthMiddleware) {
         parent::__construct();
 
@@ -39,6 +26,19 @@ abstract class CrudPresenter extends Presenter {
 
         $this->model = new $this->modelClass;
         $this->apiAuthMiddleware = $apiAuthMiddleware;
+    }
+
+    public function startup() {
+        parent::startup();
+
+        // Obtain current presenter and action
+        $presenterName = $this->getName();
+        $actionName = $this->getAction();
+
+        // Manually handle the middleware as Nette doesn't have built-in support
+        $this->apiAuthMiddleware->handle($presenterName, $actionName, function () {
+            // Proceed with `startup` logic after middleware
+        });
     }
 
     public function actionDefault() {
@@ -104,6 +104,11 @@ abstract class CrudPresenter extends Presenter {
         $this->sendJson(['message' => 'Item created']);
     }
 
+    protected function isValidData(array $data): array {
+        $dataModel = new $this->dataModelClass($data);
+        return $dataModel->listInvalidProperties();
+    }
+
     #[Requires(methods: 'PUT')]
     public function actionUpdate(int|string $id): void {
         $data = json_decode($this->getHttpRequest()->getRawBody(), true);
@@ -123,10 +128,5 @@ abstract class CrudPresenter extends Presenter {
     public function actionDelete(int|string $id): void {
         $this->model->deleteItem($id);
         $this->sendJson(['message' => 'Item deleted']);
-    }
-
-    protected function isValidData(array $data): array {
-        $dataModel = new $this->dataModelClass($data);
-        return $dataModel->listInvalidProperties();
     }
 }

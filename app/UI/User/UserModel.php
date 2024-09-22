@@ -11,7 +11,7 @@ class UserModel extends XmlModel {
 
     protected string $idProp = 'username';
 
-    public function getByApiToken(string $apiToken) : ?UserDataModel{
+    public function getByApiToken(string $apiToken): ?UserDataModel {
         $items = $this->loadItemsFromXml('apiToken');
 
         return $items[$apiToken] ?? null;
@@ -22,7 +22,7 @@ class UserModel extends XmlModel {
 
         $passwordHashed = !is_null(password_get_info($password)['algo']);
 
-        if(!$passwordHashed){
+        if (!$passwordHashed) {
             $data['password'] = $password ? password_hash($password, PASSWORD_DEFAULT) : 'not_set';
         }
 

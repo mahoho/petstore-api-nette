@@ -1,4 +1,5 @@
 <?php
+
 namespace App\UI\Pet;
 
 use App\DataModels\Support\DataModel;

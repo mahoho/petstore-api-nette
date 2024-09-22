@@ -2,26 +2,26 @@ parameters:
 
 
 application:
-	errorPresenter:
-		4xx: Error:Error4xx
-		5xx: Error:Error5xx
-	mapping: App\UI\*\**Presenter
-
+    errorPresenter:
+        4xx: Error:Error4xx
+        5xx: Error:Error5xx
+    mapping:
+        App\UI\*\**Presenter
 
 database:
-	dsn: 'sqlite::memory:'
-	user:
-	password:
+    dsn: 'sqlite::memory:'
+    user:
+    password:
 
 
 latte:
-	strictTypes: yes
-	strictParsing: yes
-	extensions:
-		- App\UI\Accessory\LatteExtension
+    strictTypes: yes
+    strictParsing: yes
+    extensions:
+        - App\UI\Accessory\LatteExtension
 
 
 di:
-	export:
-		parameters: no
-		tags: no
+    export:
+        parameters: no
+        tags: no

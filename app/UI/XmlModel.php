@@ -17,6 +17,8 @@ abstract class XmlModel {
 
     protected string $xmlFileBasePath = __DIR__ . '/../../data/';
 
+    protected string $idProp = 'id';
+
     private string $elementName;
 
     public function __construct() {
@@ -42,7 +44,7 @@ abstract class XmlModel {
      * @return array<int, DataModel>
      */
     public function getAll() : array {
-        $items = $this->loadXml();
+        $items = $this->loadItemsFromXml();
 
         if (!$items) {
             return [];
@@ -52,7 +54,7 @@ abstract class XmlModel {
     }
 
     public function getById($id) : ?DataModel {
-        $items = $this->loadXml();
+        $items = $this->loadItemsFromXml();
 
         if (!$items) {
             return null;
@@ -64,14 +66,14 @@ abstract class XmlModel {
     public function addItem($data) {
         $model = new $this->dataModelClass($data);
 
-        $items = $this->loadXml();
+        $items = $this->loadItemsFromXml();
         $items[] = $model;
 
         $this->saveXml($items);
     }
 
     public function updateItem($data) {
-        $items = $this->loadXml();
+        $items = $this->loadItemsFromXml();
 
         if (!$items) {
             return;
@@ -85,7 +87,7 @@ abstract class XmlModel {
     }
 
     public function deleteItem($id) {
-        $items = $this->loadXml();
+        $items = $this->loadItemsFromXml();
 
         if (!$items) {
             return;
@@ -101,10 +103,12 @@ abstract class XmlModel {
      *
      * @return array<int, DataModel>
      */
-    protected function loadXml() : ?array {
+    public function loadItemsFromXml($keyByProp = null) : ?array {
         if(!file_exists($this->xmlFile)) {
             return null;
         }
+
+        $keyByProp = $keyByProp ?? $this->idProp;
 
         $xmlString = file_get_contents($this->xmlFile);
 
@@ -120,7 +124,7 @@ abstract class XmlModel {
         $result = [];
 
         foreach ($array[$this->elementName] ?? [] as $item) {
-            $result[$item['id']] = new $this->dataModelClass($item);
+            $result[$item[$keyByProp]] = new $this->dataModelClass($item);
         }
 
         return $result;

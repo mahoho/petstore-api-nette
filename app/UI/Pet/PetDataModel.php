@@ -108,7 +108,7 @@ class PetDataModel extends DataModel {
         'id'        => 'getId',
         'name'      => 'getName',
         'category'  => 'getCategory',
-        'photoUrls' => 'getphotoUrlss',
+        'photoUrls' => 'getphotoUrls',
         'tags'      => 'getTags',
         'status'    => 'getStatus'
     ];

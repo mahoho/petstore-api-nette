@@ -2,6 +2,7 @@
 
 namespace App\UI;
 
+use Nette\Application\Attributes\Requires;
 use Nette\Application\UI\Presenter;
 use Nette\DI\InvalidConfigurationException;
 
@@ -21,6 +22,31 @@ abstract class CrudPresenter extends Presenter {
         }
 
         $this->model = new $this->modelClass;
+    }
+
+    public function actionDefault() {
+        $id = $this->request->getParameter('id');
+        $httpMethod = $this->request->getMethod();
+
+        if($httpMethod === 'GET') {
+            $this->actionRead($id);
+        }
+
+        if(in_array($httpMethod, ['PUT', 'POST']) && $id) {
+            $this->actionUpdate($id);
+        }
+
+        if(in_array($httpMethod, ['PUT', 'POST']) && $id) {
+            $this->actionUpdate($id);
+        }
+
+        if($httpMethod === 'POST' && !$id) {
+            $this->actionCreate();
+        }
+
+        if($httpMethod === 'DELETE') {
+            $this->actionDelete($id);
+        }
     }
 
     public function actionRead(int $id = null): void {
@@ -45,6 +71,7 @@ abstract class CrudPresenter extends Presenter {
         }
     }
 
+    #[Requires(methods: 'POST')]
     public function actionCreate(): void {
         $data = json_decode($this->getHttpRequest()->getRawBody(), true);
         $invalidProperties = $this->isValidData($data);
@@ -60,7 +87,8 @@ abstract class CrudPresenter extends Presenter {
         $this->sendJson(['message' => 'Item created']);
     }
 
-    public function actionUpdate(int $id): void {
+    #[Requires(methods: 'PUT')]
+    public function actionUpdate(int|string $id): void {
         $data = json_decode($this->getHttpRequest()->getRawBody(), true);
         $invalidProperties = $this->isValidData($data);
 
@@ -74,7 +102,8 @@ abstract class CrudPresenter extends Presenter {
         $this->sendJson(['message' => 'Item updated']);
     }
 
-    public function actionDelete(int $id): void {
+    #[Requires(methods: 'DELETE')]
+    public function actionDelete(int|string $id): void {
         $this->model->deleteItem($id);
         $this->sendJson(['message' => 'Item deleted']);
     }

@@ -8,37 +8,29 @@ use Nette;
 use Nette\Application\Routers\RouteList;
 
 
-final class RouterFactory
-{
-	use Nette\StaticClass;
+final class RouterFactory {
+    use Nette\StaticClass;
 
-	public static function createRouter(): RouteList
-	{
-		$router = new RouteList;
+    public static function createRouter(): RouteList {
+        $router = new RouteList;
+//        $router->addRoute('<presenter>/<action>[/<id>]', 'Home:default');
 
-        // Pet API Routes
-        $router->addRoute('api/pets[/<id>]', 'Pet:read');
-        $router->addRoute('api/pets/create', 'Pet:create');
-        $router->addRoute('api/pets/update/<id>', 'Pet:update');
-        $router->addRoute('api/pets/delete/<id>', 'Pet:delete');
+        $router->addRoute('/pet/findByStatus', 'Pet:findByStatus');
+        $router->addRoute('/pet/findByTags', 'Pet:findByTags');
+        $router->addRoute('/pet/<id>/uploadImage', 'Pet:uploadImage');
 
-        // Tag API Routes
-        $router->addRoute('api/tags[/<id>]', 'Tag:read');
-        $router->addRoute('api/tags/create', 'Tag:create');
-        $router->addRoute('api/tags/update/<id>', 'Tag:update');
-        $router->addRoute('api/tags/delete/<id>', 'Tag:delete');
+        $router->addRoute('/pet/[<id>]', 'Pet:default');
 
-        // Order API Routes
-        $router->addRoute('api/orders[/<id>]', 'Order:read');
-        $router->addRoute('api/orders/create', 'Order:create');
-        $router->addRoute('api/orders/update/<id>', 'Order:update');
-        $router->addRoute('api/orders/delete/<id>', 'Order:delete');
+        $router->addRoute('/tag/[<id>]', 'Tag:default');
 
-        // User API Routes
-        $router->addRoute('api/users[/<id>]', 'User:read');
-        $router->addRoute('api/users/create', 'User:create');
-        $router->addRoute('api/users/update/<id>', 'User:update');
-        $router->addRoute('api/users/delete/<id>', 'User:delete');
-		return $router;
-	}
+        $router->addRoute('/store/inventory', 'Order:inventory');
+        $router->addRoute('/store/order/[<id>]', 'Order:default');
+
+        $router->addRoute('/user/createCreateWithList', 'User:createCreateWithList');
+        $router->addRoute('/user/login', 'User:login');
+        $router->addRoute('/user/logout', 'User:logout');
+        $router->addRoute('/user/[<id>]', 'User:default');
+
+        return $router;
+    }
 }

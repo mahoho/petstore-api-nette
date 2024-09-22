@@ -63,39 +63,65 @@ abstract class XmlModel {
         return $items[$id] ?? null;
     }
 
-    public function addItem($data) {
-        $model = new $this->dataModelClass($data);
+    public function addItem($data) : DataModel {
+        $dataPrepared = $this->prepareData($data);
 
-        $items = $this->loadItemsFromXml();
-        $items[] = $model;
+        unset($dataPrepared['id']);
+
+        $items = $this->loadItemsFromXml('id');
+
+        $maxId = max(array_keys($items));
+
+        $dataPrepared['id'] = $maxId + 1;
+
+        $model = new $this->dataModelClass($dataPrepared);
+
+        $items[$maxId] = $model;
 
         $this->saveXml($items);
+
+        return $model;
     }
 
-    public function updateItem($data) {
+    public function updateItem($data) : ?DataModel {
         $items = $this->loadItemsFromXml();
 
         if (!$items) {
-            return;
+            return null;
         }
 
-        $model = new $this->dataModelClass($data);
+        $dataPrepared = $this->prepareData($data);
+        $model = new $this->dataModelClass($dataPrepared);
 
         $items[$model->getId()] = $model;
 
         $this->saveXml($items);
+
+        return $model;
     }
 
-    public function deleteItem($id) {
+    public function deleteItem($id) :bool {
         $items = $this->loadItemsFromXml();
 
         if (!$items) {
-            return;
+            return false;
         }
 
         unset($items[$id]);
 
         $this->saveXml($items);
+
+        return true;
+    }
+
+    /**
+     * Hook to modify data before create/update if needed
+     *
+     * @param $data
+     * @return mixed
+     */
+    public function prepareData(array $data) : array {
+        return $data;
     }
 
     /**

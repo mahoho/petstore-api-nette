@@ -37,6 +37,10 @@ abstract class XmlModel {
         $inflector = InflectorFactory::create()->build();
         $this->elementName = $inflector->singularize($this->xmlFileName);
 
+        if(!file_exists($this->xmlFileBasePath)) {
+            mkdir($this->xmlFileBasePath, 0777, true);
+        }
+
         $this->xmlFile = $this->xmlFileBasePath . $this->xmlFileName . '.xml';
     }
 

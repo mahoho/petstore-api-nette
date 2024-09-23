@@ -7,3 +7,5 @@ Project uses DataModels generated from schema using [OpenApi Generator](https://
 Instead of database connection, XML files are used. 
 
 To add more fields, adjust proper DataModel classes.
+
+Start from `/users/createFromList` to create users and make subsequent requests. 

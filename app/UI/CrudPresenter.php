@@ -74,7 +74,7 @@ abstract class CrudPresenter extends Presenter {
     }
 
     #[Requires(methods: 'GET')]
-    public function actionRead(int $id = null): void {
+    public function actionRead(int|string $id = null): void {
         if(!$id) {
             $items = $this->model->getAll();
             $this->sendJson($items);

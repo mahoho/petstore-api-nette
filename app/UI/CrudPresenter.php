@@ -52,10 +52,6 @@ abstract class CrudPresenter extends Presenter {
             $this->actionUpdate($id);
         }
 
-        if (in_array($httpMethod, ['PUT', 'POST']) && $id) {
-            $this->actionUpdate($id);
-        }
-
         if ($httpMethod === 'POST' && !$id) {
             $this->actionCreate();
         }
@@ -84,7 +80,7 @@ abstract class CrudPresenter extends Presenter {
 
     #[Requires(methods: 'POST')]
     public function actionCreate(): void {
-        $data = json_decode($this->getHttpRequest()->getRawBody(), true);
+        $data = $this->getRequest()->getPost();
         $invalidProperties = $this->isValidData($data);
 
         if (!empty($invalidProperties)) {
@@ -99,15 +95,25 @@ abstract class CrudPresenter extends Presenter {
 
     #[Requires(methods: 'PUT')]
     public function actionUpdate(int|string $id): void {
-        $data = json_decode($this->getHttpRequest()->getRawBody(), true);
-        $invalidProperties = $this->isValidData($data);
+        $data = $this->getRequest()->getPost();
+
+        $model = $this->model->getById($id);
+
+        if(!$model) {
+            $this->getHttpResponse()->setCode(404);
+            $this->sendJson(['errors' => 'Item not found']);
+        }
+
+        $model->fill($data);
+
+        $invalidProperties = $this->isValidData($model->toArray());
 
         if (!empty($invalidProperties)) {
             $this->getHttpResponse()->setCode(422);
             $this->sendJson(['errors' => $invalidProperties]);
         }
 
-        $this->model->updateItem($data);
+        $this->model->updateItem($model);
         $this->sendJson(['message' => 'Item updated']);
     }
 

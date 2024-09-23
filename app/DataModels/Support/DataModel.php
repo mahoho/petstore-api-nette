@@ -213,13 +213,12 @@ abstract class DataModel implements ModelInterface, ArrayAccess, \JsonSerializab
         return isset($this->container[$name]);
     }
 
-    /**
-     * Unsets offset.
-     *
-     * @param integer $offset Offset
-     *
-     * @return void
-     */
+    public function fill($data) {
+        foreach ($data as $key => $value) {
+            $this->container[$key] = $value;
+        }
+    }
+
     public function offsetUnset($offset): void {
         unset($this->container[$offset]);
     }

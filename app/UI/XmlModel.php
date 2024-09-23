@@ -72,11 +72,11 @@ abstract class XmlModel {
         $xmlString = file_get_contents($this->xmlFile);
 
         $array = XmlToArray::convert($xmlString, [
-            'tags'             => '',
+            'tag'             => 'tags',
             'photoUrl'         => 'photoUrls',
             $this->elementName => ""
         ], [
-            'tags'     => '',
+            'tag'     => 'tags',
             'photoUrl' => 'photoUrls'
         ]);
 
@@ -85,6 +85,10 @@ abstract class XmlModel {
         foreach ($array[$this->elementName] ?? [] as $item) {
             if (!is_array($item) || empty($item[$keyByProp])) {
                 continue;
+            }
+
+            if(isset($item['tags']['tag'])) {
+                $item['tags'] = $item['tags']['tag'];
             }
 
             $result[$item[$keyByProp]] = new $this->dataModelClass($item);

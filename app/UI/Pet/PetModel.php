@@ -12,7 +12,7 @@ class PetModel extends XmlModel {
         $items = $this->getAll();
 
         return array_filter($items, function (PetDataModel $item) use ($statuses) {
-            return in_array($item->getStatus(), $statuses);
+            return in_array($item->status, $statuses);
         });
     }
 
@@ -20,7 +20,7 @@ class PetModel extends XmlModel {
         $items = $this->getAll();
 
         return array_filter($items, function (PetDataModel $item) use ($tags) {
-            $petTags = array_column($item->getTags(), 'name');
+            $petTags = array_column($item->tags, 'name');
 
             return array_intersect($tags, $petTags);
         });

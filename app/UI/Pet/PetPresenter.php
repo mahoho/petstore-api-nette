@@ -30,8 +30,7 @@ class PetPresenter extends CrudPresenter {
 
     #[Requires(methods: 'POST')]
     public function actionUploadImage(int|string $id) {
-        /** @var FileUpload $file */
-        $file = $this->request->getFile('file');
+        $file = $this->getRequest()->getFiles()['image'] ?? null;
 
         if (!$file || !$file->isImage()) {
             $this->getHttpResponse()->setCode(422);

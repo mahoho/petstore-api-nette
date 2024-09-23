@@ -21,6 +21,11 @@ abstract class XmlModel {
 
     private string $elementName;
 
+    private array $shouldBeArrays = [
+        'tag'      => 'tags',
+        'photoUrl' => 'photoUrls',
+    ];
+
     public function __construct() {
         if (!$this->xmlFileName) {
             $className = __CLASS__;
@@ -37,7 +42,7 @@ abstract class XmlModel {
         $inflector = InflectorFactory::create()->build();
         $this->elementName = $inflector->singularize($this->xmlFileName);
 
-        if(!file_exists($this->xmlFileBasePath)) {
+        if (!file_exists($this->xmlFileBasePath)) {
             mkdir($this->xmlFileBasePath, 0777, true);
         }
 
@@ -71,14 +76,11 @@ abstract class XmlModel {
 
         $xmlString = file_get_contents($this->xmlFile);
 
+
         $array = XmlToArray::convert($xmlString, [
-            'tag'             => 'tags',
-            'photoUrl'         => 'photoUrls',
+            ...$this->shouldBeArrays,
             $this->elementName => ""
-        ], [
-            'tag'     => 'tags',
-            'photoUrl' => 'photoUrls'
-        ]);
+        ], $this->shouldBeArrays);
 
         $result = [];
 
@@ -87,8 +89,10 @@ abstract class XmlModel {
                 continue;
             }
 
-            if(isset($item['tags']['tag'])) {
-                $item['tags'] = $item['tags']['tag'];
+            foreach ($this->shouldBeArrays as $nodeName => $parentNodeName) {
+                if (isset($item[$parentNodeName][$nodeName])) {
+                    $item[$parentNodeName] = $item[$parentNodeName][$nodeName];
+                }
             }
 
             $result[$item[$keyByProp]] = new $this->dataModelClass($item);
@@ -149,7 +153,18 @@ abstract class XmlModel {
         $xmlItems = [];
         foreach ($xmlData as $item) {
             /** @var DataModel $item */
-            $xmlItems[] = [$this->elementName => $item->toArray()];
+            $arrayItem = $item->toArray();
+
+            foreach ($arrayItem as $key => $value) {
+                if(in_array($key, $this->shouldBeArrays)) {
+                    $childNodeName = array_flip($this->shouldBeArrays)[$key];
+                    $arrayItem[$key] = array_map(function ($v) use ($childNodeName) {
+                        return [$childNodeName => $v];
+                    }, $value);
+                }
+            }
+
+            $xmlItems[] = [$this->elementName => $arrayItem];
         }
 
         $root->addChild($xmlItems);

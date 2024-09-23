@@ -56,6 +56,18 @@ abstract class CrudPresenter extends Presenter {
             $this->actionCreate();
         }
 
+        if ($httpMethod === 'PUT') {
+            $data = json_decode($this->getHttpRequest()->getRawBody(), true);
+            $id = $data['id'] ?? null;
+
+            if(!$id) {
+                $this->getHttpResponse()->setCode(404);
+                $this->sendJson(['error' => 'Item not found']);
+            }
+
+            $this->actionUpdate($id);
+        }
+
         if ($httpMethod === 'DELETE') {
             $this->actionDelete($id);
         }
@@ -80,7 +92,7 @@ abstract class CrudPresenter extends Presenter {
 
     #[Requires(methods: 'POST')]
     public function actionCreate(): void {
-        $data = $this->getRequest()->getPost();
+        $data = json_decode($this->getHttpRequest()->getRawBody(), true);
         $invalidProperties = $this->isValidData($data);
 
         if (!empty($invalidProperties)) {
@@ -95,7 +107,7 @@ abstract class CrudPresenter extends Presenter {
 
     #[Requires(methods: 'PUT')]
     public function actionUpdate(int|string $id): void {
-        $data = $this->getRequest()->getPost();
+        $data = json_decode($this->getHttpRequest()->getRawBody(), true);
 
         $model = $this->model->getById($id);
 
@@ -119,7 +131,13 @@ abstract class CrudPresenter extends Presenter {
 
     #[Requires(methods: 'DELETE')]
     public function actionDelete(int|string $id): void {
-        $this->model->deleteItem($id);
+        $result = $this->model->deleteItem($id);
+
+        if(!$result) {
+            $this->getHttpResponse()->setCode(404);
+            $this->sendJson(['errors' => 'Item not found']);
+        }
+
         $this->sendJson(['message' => 'Item deleted']);
     }
 

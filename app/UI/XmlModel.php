@@ -155,6 +155,8 @@ abstract class XmlModel {
             /** @var DataModel $item */
             $arrayItem = $item->toArray();
 
+            $arrayItem = $this->escapeXmlStrings($arrayItem);
+
             foreach ($arrayItem as $key => $value) {
                 if(in_array($key, $this->shouldBeArrays)) {
                     $childNodeName = array_flip($this->shouldBeArrays)[$key];
@@ -170,6 +172,20 @@ abstract class XmlModel {
         $root->addChild($xmlItems);
 
         $xml->save($this->xmlFile);
+    }
+
+    protected function escapeXmlStrings($val){
+        if(is_string($val)) {
+            return htmlspecialchars($val);
+        }
+
+        if(is_array($val)) {
+            foreach ($val as $key => $value) {
+                $val[$key] = $this->escapeXmlStrings($value);
+            }
+        }
+
+        return $val;
     }
 
     public function updateItem($data): ?DataModel {
@@ -193,6 +209,10 @@ abstract class XmlModel {
         $items = $this->loadItemsFromXml();
 
         if (!$items) {
+            return false;
+        }
+
+        if(!isset($items[$id])) {
             return false;
         }
 

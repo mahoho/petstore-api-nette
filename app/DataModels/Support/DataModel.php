@@ -134,31 +134,6 @@ abstract class DataModel implements ModelInterface, ArrayAccess, \JsonSerializab
     }
 
     /**
-     * Gets id
-     *
-     * @return int|null
-     */
-    public function getId() {
-        return $this->container['id'];
-    }
-
-    /**
-     * Sets id
-     *
-     * @param int|null $id id
-     *
-     * @return self
-     */
-    public function setId($id) {
-        if (is_null($id)) {
-            throw new \InvalidArgumentException('non-nullable id cannot be null');
-        }
-        $this->container['id'] = $id;
-
-        return $this;
-    }
-
-    /**
      * Returns true if offset exists. False otherwise.
      *
      * @param integer $offset Offset

@@ -52,6 +52,22 @@ class ObjectSerializer {
         self::$dateTimeFormat = $format;
     }
 
+    protected static function cast($data, $type) {
+        if($type === 'int') {
+            return filter_var($data, FILTER_VALIDATE_INT);
+        }
+
+        if($type === 'boolean') {
+            return filter_var($data, FILTER_VALIDATE_BOOLEAN);
+        }
+
+        if($type === 'float') {
+            return filter_var($data, FILTER_VALIDATE_FLOAT);
+        }
+
+        return $data;
+    }
+
     /**
      * Serialize data
      *
@@ -62,8 +78,12 @@ class ObjectSerializer {
      * @return string|object|array|null serialized form of $data
      */
     public static function sanitizeForSerialization($data, $type = null, $format = null) {
-        if (is_scalar($data) || null === $data) {
+        if (is_null($data)) {
             return $data;
+        }
+
+        if (is_scalar($data)) {
+            return static::cast($data, $type);
         }
 
         if ($data instanceof \DateTime) {

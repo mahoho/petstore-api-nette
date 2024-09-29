@@ -183,9 +183,15 @@ abstract class XmlModel {
             foreach ($val as $key => $value) {
                 $val[$key] = $this->escapeXmlStrings($value);
             }
+
+            return $val;
         }
 
-        return $val;
+        if(!is_bool($val)) {
+            return (string)$val;
+        }
+
+        return $val ? '1' : '0';
     }
 
     public function updateItem($data): ?DataModel {

@@ -20,6 +20,7 @@ use Nette\Security\IIdentity;
  * @property int $userStatus
  *
  * @link     https://openapi-generator.tech
+ * @method array getData()
  */
 class UserDataModel extends DataModel implements IIdentity {
     /**
@@ -103,6 +104,10 @@ class UserDataModel extends DataModel implements IIdentity {
 
     function getRoles(): array {
         return [];
+    }
+
+    function getId() {
+       return $this->id;
     }
 }
 

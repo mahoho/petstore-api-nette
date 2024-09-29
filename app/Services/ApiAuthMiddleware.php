@@ -44,6 +44,7 @@ class ApiAuthMiddleware {
 
             if (!$user) {
                 $this->httpResponse->setCode(401);
+                header('Content-Type: application/json');
                 echo json_encode(['error' => 'Invalid API token']);
                 exit;
             }
@@ -53,11 +54,13 @@ class ApiAuthMiddleware {
                 return $next();
             } catch (AuthenticationException $e) {
                 $this->httpResponse->setCode(401);
+                header('Content-Type: application/json');
                 echo json_encode(['error' => 'Unauthorized']);
                 exit;
             }
         } else {
             $this->httpResponse->setCode(401);
+            header('Content-Type: application/json');
             echo json_encode(['error' => 'Missing or malformed Authorization header']);
             exit;
         }

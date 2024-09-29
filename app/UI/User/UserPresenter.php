@@ -10,6 +10,13 @@ class UserPresenter extends CrudPresenter {
     protected string $modelClass = UserModel::class;
     protected string $dataModelClass = UserDataModel::class;
 
+    #[Requires(methods: 'GET')]
+    public function actionMe(){
+        $user = $this->user->getIdentity();
+
+        $this->sendJson($user);
+    }
+
     #[Requires(methods: 'POST')]
     public function actionCreateWithList() {
         $data = json_decode($this->getHttpRequest()->getRawBody(), true);
@@ -33,8 +40,10 @@ class UserPresenter extends CrudPresenter {
 
     #[Requires(methods: ['GET', 'POST'])]
     public function actionLogin() {
-        $userName = $this->request->getParameter('username');
-        $password = $this->request->getParameter('password');
+        $data = json_decode($this->getHttpRequest()->getRawBody(), true);
+
+        $userName = $data['username'] ?? "";
+        $password = $data['password'] ?? '';
 
         try {
             $user = $this->user->getAuthenticator()->authenticate($userName, $password);
@@ -47,7 +56,7 @@ class UserPresenter extends CrudPresenter {
         }
     }
 
-    #[Requires(methods: 'GET')]
+    #[Requires(methods: ['GET', 'POST'])]
     public function actionLogout() {
         $user = $this->user->getIdentity();
         $user->apiToken = null;

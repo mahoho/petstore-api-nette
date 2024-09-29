@@ -13,7 +13,7 @@ class Bootstrap {
         $rootDir = dirname(__DIR__);
 
         //$configurator->setDebugMode('secret@23.75.345.200'); // enable for your remote IP
-        $configurator->enableTracy($rootDir . '/log');
+//        $configurator->enableTracy($rootDir . '/log');
 
         $configurator->setTempDirectory($rootDir . '/temp');
 

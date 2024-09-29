@@ -13,7 +13,6 @@ final class RouterFactory {
 
     public static function createRouter(): RouteList {
         $router = new RouteList;
-//        $router->addRoute('<presenter>/<action>[/<id>]', 'Home:default');
 
         $router->addRoute('/pet/findByStatus', 'Pet:findByStatus');
         $router->addRoute('/pet/findByTags', 'Pet:findByTags');
@@ -23,12 +22,15 @@ final class RouterFactory {
 
         $router->addRoute('/tag/[<id>]', 'Tag:default');
 
+        $router->addRoute('/store/dashboard', 'Order:dashboard');
         $router->addRoute('/store/inventory', 'Order:inventory');
         $router->addRoute('/store/order/[<id>]', 'Order:default');
 
         $router->addRoute('/user/createWithList', 'User:createWithList');
+        $router->addRoute('/user/list', 'User:list');
         $router->addRoute('/user/login', 'User:login');
         $router->addRoute('/user/logout', 'User:logout');
+        $router->addRoute('/user/me', 'User:me');
         $router->addRoute('/user/[<id>]', 'User:default');
 
         return $router;

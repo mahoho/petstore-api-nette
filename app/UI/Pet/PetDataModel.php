@@ -36,9 +36,9 @@ class PetDataModel extends DataModel {
     protected static $openAPITypes = [
         'id'        => 'int',
         'name'      => 'string',
-        'category'  => '\App\UI\Pet\Category',
+        'category'  => '\App\UI\Category\CategoryDataModel',
         'photoUrls' => 'string[]',
-        'tags'      => '\App\UI\Pet\Tag[]',
+        'tags'      => '\App\UI\Tag\TagDataModel[]',
         'status'    => 'string'
     ];
     /**

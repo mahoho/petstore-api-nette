@@ -59,10 +59,10 @@ class OrderPresenter extends CrudPresenter {
         }
 
         $shipDate = $data['shipDate'];
-        $shipDateObj = DateTime::createFromFormat('Y-m-d\TH:i:s.v\Z', $shipDate);
+        $shipDateObj = DateTime::createFromFormat('Y-m-d\TH:i:s.u\Z', $shipDate);
 
         if (!$shipDateObj) {
-            $validations['shipDate'] = 'shipDate must follow ISO8601 format (Y-m-dTH:i:s.vZ)';
+            $validations['shipDate'] = 'shipDate must follow ISO8601 format (Y-m-dTH:i:s.uZ)';
         }
 
         $complete = $data['complete'];

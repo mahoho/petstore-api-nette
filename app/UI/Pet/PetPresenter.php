@@ -34,7 +34,7 @@ class PetPresenter extends CrudPresenter {
 
         if (!$file || !$file->isImage()) {
             $this->getHttpResponse()->setCode(422);
-            $this->sendJson(['errors' => ['file' => 'File is not an image.']]);
+            $this->sendJson(['errors' => ['image' => 'File is not an image.']]);
         }
 
         $safeFileName = $file->getSanitizedName();

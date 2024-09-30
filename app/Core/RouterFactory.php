@@ -17,10 +17,11 @@ final class RouterFactory {
         $router->addRoute('/pet/findByStatus', 'Pet:findByStatus');
         $router->addRoute('/pet/findByTags', 'Pet:findByTags');
         $router->addRoute('/pet/<id>/uploadImage', 'Pet:uploadImage');
-
         $router->addRoute('/pet/[<id>]', 'Pet:default');
 
         $router->addRoute('/tag/[<id>]', 'Tag:default');
+
+        $router->addRoute('/category/[<id>]', 'Category:default');
 
         $router->addRoute('/store/dashboard', 'Order:dashboard');
         $router->addRoute('/store/inventory', 'Order:inventory');
